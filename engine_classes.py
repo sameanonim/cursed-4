@@ -14,6 +14,8 @@ class Engine(ABC):
 
 
 class HH(Engine):
+    def __init__(self):
+        pass
 
     def get_request(self):
         """
@@ -42,6 +44,9 @@ class HH(Engine):
         return vacancies_list_hh
 
 class SuperJob(Engine):
+    def __init__(self, api_key):
+        self.api_key = api_key
+
     def get_request(self):
         my_auth_data = {'X-Api-App-Id': os.environ['SJ_API_KEY']}
         url = 'https://api.superjob.ru/2.0/vacancies'

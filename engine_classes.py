@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 import os
 import requests
 import json
+from connector import Connector
 
 class Engine(ABC):
 
@@ -38,6 +39,9 @@ class HH(Engine):
         responce = requests.get(self.URL, params=self.params)
         data = responce.content.decode('utf-8')
         responce.close()
+
+        js_hh = json.load(data)
+        return js_hh
 
     def get_info_vacancy(self, data):
         info = {

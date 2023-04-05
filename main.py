@@ -1,25 +1,57 @@
-from engine_classes import Engine, HH, SuperJob
-from jobs_classes import Vacancy, HHVacancy, SJVacancy
-from utils import check_search, get_only_str_vac, get_top_vac_by_salary
-from operator import itemgetter
-import os
+import json
+from engine_classes import SuperJob, HH
+from jobs_classes import Vacancy
 
-# Получение вакансий с разных платформ
-def main():
+#Получаем от пользователя ключевое слово для поиска вакансий
+key_word = input('Введите вакансию для поиска: ').strip()
 
-    path = os.path.join('.filename.json')
-    connector = Engine.get_connector(path)  # создаем экземпляр класса Connector функцией get_connector из класса Engine
 
-    search_keyword = input('Введите ключевое слово поиска')
+hh = HH()
+response = hh.get_request(key_word)
+into_file_hh = hh.rec_vacancies('data_list.json', response)
 
-    hh = HH(search_keyword)
-    sj = SuperJob(search_keyword)
-    if check_search(hh, sj):
-        all_vacancies = hh.get_vacancies + sj.get_vacancies
-        connector.insert(path, all_vacancies)
-        print(type(all_vacancies))
-        print(all_vacancies[0])
-        sorted(all_vacancies, key=itemgetter('date_published'))
 
-if __name__ == '__main__':
-    main()
+s = SuperJob()
+response = s.get_request(key_word)
+into_file_sj = s.rec_vacancies('data_list.json', response)
+
+
+print('По вашему запросу собрано 500 вакансий с сайта SuperJob и 500 вакансий с сайта HeadHunter.\nВыберите '
+      "дальнейшее действие:\nВывести список всех вакансий: нажмите s\nВывести 10 самых высокооплачиваемых вакансий: "
+      "введите top\nВывести вакансии с возможностью удаленной работы: нажмите n\nЕсли вы хотите завершить программу: "
+      "нажмите q")
+
+
+with open('data_list.json', 'r', encoding='utf8') as f:
+    vacancies_from_json = json.load(f)
+    vacancy_subjects = []
+    for vac in vacancies_from_json:
+        v = Vacancy(vac["name"], vac["company_name"], vac["url"], vac["description"], vac["remote_work"], vac["salary"])
+        vacancy_subjects.append(v)
+
+
+user_choice = input()
+
+while user_choice != 'q':
+    if user_choice == 's':
+        for i in vacancy_subjects:
+            print(i)
+        user_choice = input('Введите следующую команду ')
+    if user_choice == 'top':
+        sorted_vacancies = sorted(vacancy_subjects, reverse=True)[:10]
+        for i in sorted_vacancies:
+            print(i)
+        user_choice = input('Введите следующую команду ')
+    if user_choice == 'n':
+        remote_vacancies = []
+        for i in vacancy_subjects:
+            if i.remote_work == 'Удаленно':
+                remote_vacancies.append(i)
+        for rem in remote_vacancies:
+            print(rem)
+        user_choice = input('Введите следующую команду ')
+    else:
+        print('Команда не распознана. Попробуйте еще раз или нажмите q для завершения программы')
+        user_choice = input()
+
+print('Завершение программы')

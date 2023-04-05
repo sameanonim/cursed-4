@@ -16,9 +16,9 @@ response = s.get_request(key_word)
 into_file_sj = s.rec_vacancies('data_list.json', response)
 
 
-print('По вашему запросу собрано 500 вакансий с сайта SuperJob и 500 вакансий с сайта HeadHunter.\nВыберите '
+print('По вашему запросу собрано 500 вакансий с SuperJob и HeadHunter.\nВыберите '
       "дальнейшее действие:\nВывести список всех вакансий: нажмите s\nВывести 10 самых высокооплачиваемых вакансий: "
-      "введите top\nВывести вакансии с возможностью удаленной работы: нажмите n\nЕсли вы хотите завершить программу: "
+      "введите t\nВывести вакансии с возможностью удаленной работы: нажмите n\nЕсли вы хотите завершить программу: "
       "нажмите q")
 
 
@@ -37,7 +37,7 @@ while user_choice != 'q':
         for i in vacancy_subjects:
             print(i)
         user_choice = input('Введите следующую команду ')
-    if user_choice == 'top':
+    if user_choice == 't':
         sorted_vacancies = sorted(vacancy_subjects, reverse=True)[:10]
         for i in sorted_vacancies:
             print(i)

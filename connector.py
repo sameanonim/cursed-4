@@ -1,8 +1,6 @@
 import json
 import os
-
-import json
-import os
+import datetime
 
 class Connector:
     """
@@ -10,15 +8,10 @@ class Connector:
     не забывать проверять целостность данных, что файл с данными не подвергся
     внешнего деградации
     """
-    data_file = None
+    __data_file = None
 
-    def __init__(self, file_path: str):
-        self.data_file = file_path
-        self.__connect
-
-    @property
-    def data_file(self):
-        return self.__data_file
+    def __init__(self, filename: str):
+        self.data_file = filename
 
     @data_file.setter
     def data_file(self, value):
@@ -88,18 +81,17 @@ class Connector:
         with open(self.__data_file, 'r', encoding='utf-8') as file:
             data = json.load(file)
         
-        result = []
-        for item in data:
-            match = True
-            for key, value in query.items():
-                if item.get(key) != value:
-                    match = False
-                    break
-            if match:
-                result.append(item)
-        
-        with open(self.__data_file, 'w', encoding='utf-8') as file:
-            for item in data:
-                if item not in result:
-                    json.dump(item, file)
-                    file.write('\n')
+        del_key, del_value = list(query.items())[0]
+
+        with open(self.__data_file, 'r', encoding='utf8') as f:
+            file_data = json.load(f)
+
+        non_del = []
+        for vacancy in file_data:
+            if vacancy[del_key] == del_value:
+                pass
+            else:
+                non_del.append(vacancy)
+
+        with open(self.__data_file, 'w', encoding='utf8') as f:
+            json.dump(non_del, f, ensure_ascii=False, indent=4)

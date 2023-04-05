@@ -5,12 +5,9 @@ import json
 from connector import Connector
 
 class Engine(ABC):
-    def __init__(self):
-        #
-        pass
 
     @abstractmethod
-    def get_request(self):
+    def get_request(self, keyword):
         """Абстрактный метод запросов"""
         pass
 
@@ -18,6 +15,7 @@ class Engine(ABC):
     def get_connector(file_name):
         """ Возвращает экземпляр класса Connector """
         return Connector(file_name)
+
 
 
 class HH(Engine):

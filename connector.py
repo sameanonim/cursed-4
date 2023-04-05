@@ -83,7 +83,7 @@ class Connector:
 
 
 if __name__ == '__main__':
-    df = Connector('df.json')
+    df = Connector('../filename.json')
 
     data_for_file = {'id': 1, 'title': 'tet'}
 

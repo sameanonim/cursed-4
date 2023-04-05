@@ -1,0 +1,13 @@
+filename.json
+.idea/.gitignore
+.idea/cursed 4.iml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+.idea/inspectionProfiles/profiles_settings.xml
+.idea/inspectionProfiles/Project_Default.xml
+.vscode/settings.json
+__pycache__/connector.cpython-310.pyc
+__pycache__/engine_classes.cpython-310.pyc
+__pycache__/jobs_classes.cpython-310.pyc
+__pycache__/utils.cpython-310.pyc

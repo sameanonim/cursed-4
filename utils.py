@@ -5,7 +5,7 @@ from jobs_classes import HHVacancy, SJVacancy
 
 def check_search(hh: HH, sj: SuperJob) -> bool:
     """Проверка на существование"""
-    return hh.get_request()['items'] ! = [] and sj.get_request()['objects'] ! = []
+    return hh.get_request()['items'] != [] and sj.get_request()['objects'] != []
 
 def get_only_str_vac(data):
     str_vac_list = []

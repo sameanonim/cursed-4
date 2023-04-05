@@ -5,15 +5,16 @@ import json
 from connector import Connector
 
 class Engine(ABC):
-
     def __init__(self):
+        #
         pass
 
     @abstractmethod
     def get_request(self):
+        """Абстрактный метод запросов"""
         pass
 
-    @staticmethod
+    @staticmethod   
     def get_connector(file_name):
         """ Возвращает экземпляр класса Connector """
         return Connector(file_name)
@@ -28,7 +29,7 @@ class HH(Engine):
             'text': f'{search_keyword}',
             'per_page': 100,
             'area': 113,
-            'page': 0
+            'page': 0,
         }
         
 
@@ -54,6 +55,7 @@ class HH(Engine):
             'expirience': data.get('expirience'),
             'page_number': data.get('page')
         }
+        return info
 
     @property
     def get_vacancies(self):

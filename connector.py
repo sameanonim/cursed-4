@@ -1,16 +1,19 @@
 import json
 import os
 
+import json
+import os
+
 class Connector:
     """
     Класс коннектор к файлу, обязательно файл должен быть в json формате
     не забывать проверять целостность данных, что файл с данными не подвергся
     внешнего деградации
     """
-    __data_file = None
+    data_file = None
 
     def __init__(self, file_path: str):
-        self.__data_file = file_path
+        self.data_file = file_path
         self.__connect
 
     @property
@@ -79,18 +82,24 @@ class Connector:
         как в методе select. Если в query передан пустой словарь, то
         функция удаления не сработает
         """
-        pass
-
-
-if __name__ == '__main__':
-    df = Connector('../filename.json')
-
-    data_for_file = {'id': 1, 'title': 'tet'}
-
-    df.insert(data_for_file)
-    data_from_file = df.select(dict())
-    assert data_from_file == [data_for_file]
-
-    df.delete({'id':1})
-    data_from_file = df.select(dict())
-    assert data_from_file == []
+        if not query:
+            return
+        
+        with open(self.__data_file, 'r', encoding='utf-8') as file:
+            data = json.load(file)
+        
+        result = []
+        for item in data:
+            match = True
+            for key, value in query.items():
+                if item.get(key) != value:
+                    match = False
+                    break
+            if match:
+                result.append(item)
+        
+        with open(self.__data_file, 'w', encoding='utf-8') as file:
+            for item in data:
+                if item not in result:
+                    json.dump(item, file)
+                    file.write('\n')

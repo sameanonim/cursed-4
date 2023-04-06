@@ -33,7 +33,7 @@ class Vacancy:
                f' {self.url}\nОписание вакансии: {self.description}\nМесто работы: {self.remote_work}\nЗарплата:' \
                f' {self.salary}\n'
 
-    def __gt__(self, other: Employee) -> bool:
+    def __gt__(self, other) -> bool:
         """
         Compare two employees by salary.
 

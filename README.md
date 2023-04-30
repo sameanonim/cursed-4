@@ -12,7 +12,7 @@
 
 ## :dart: About ##
 
-For find job on HH and SuperJob
+For find job on HH
 
 ## :sparkles: Features ##
 
@@ -28,7 +28,7 @@ Before starting :checkered_flag:, you need to have [Git](https://git-scm.com) in
 
 ```bash
 # Clone this project
-$ git clone https://github.com/sameanonim/cursed-4
+$ git clone https://github.com/sameanonim/cursed-5
 
 # Access
 $ cd cursed-4

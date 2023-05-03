@@ -91,14 +91,14 @@ for vacancy in vacancies:
     VALUES (%s, %s, %s, %s, %s, %s)
 """, (vacancy_name, vacancy_company_name, vacancy_url, vacancy_description,
       vacancy_remote_work, vacancy_salary))
-
-# Класс DBmanager для работы с БД
-db_manager= DBManager(**params)
-print(db_manager.get_companies_and_vacancies_count())
-print(db_manager.get_all_vacancies())
-print(db_manager.get_avg_salary())
-print(db_manager.get_vacancies_with_higher_salary())
-print(db_manager.get_vacancies_with_keyword("python"))
+    
+db_manager= DBManager()
+db_manager.__init__(**params)
+print(DBManager.get_companies_and_vacancies_count())
+print(DBManager.get_all_vacancies())
+print(DBManager.get_avg_salary())
+print(DBManager.get_vacancies_with_higher_salary())
+print(DBManager.get_vacancies_with_keyword("python"))
 
 # Сохраняем изменения в БД
 conn.commit()

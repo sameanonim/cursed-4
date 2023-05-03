@@ -1,26 +1,34 @@
 # Импортируем библиотеку psycopg2 для работы с БД Postgres
 import psycopg2
+from configparser import ConfigParser # for reading the config file.
+
+config = ConfigParser()
+config.read('config.ini')
+section = 'postgresql'
+params = {
+    'host': config.get(section, 'host'),
+    'dbname': config.get(section, 'database'),
+    'user': config.get(section, 'user'),
+    'password': config.get(section, 'password'),
+    'port': config.get(section, 'port')
+}
 
 # Создаем класс DBManager с атрибутами для хранения параметров соединения с БД
 class DBManager:
     # Создаем метод __init__ для инициализации объекта класса и установки соединения с БД
-    def __init__(self, dbname, user, password, host):
+    def __init__(self, host, dbname, user, password, port):
         # Сохраняем параметры соединения в атрибутах объекта
+        self.host = host
         self.dbname = dbname
         self.user = user
         self.password = password
-        self.host = host
+        self.port = port
         # Устанавливаем соединение с БД и создаем курсор для выполнения SQL-запросов
-        self.conn = psycopg2.connect(dbname=self.dbname, user=self.user, password=self.password, host=self.host)
+        self.conn = psycopg2.connect(**params)
         self.cur = self.conn.cursor()
     
-    # Создаем метод __del__ для закрытия соединения с БД при удалении объекта класса
-    def __del__(self):
-        # Закрываем курсор и соединение с БД
-        self.cur.close()
-        self.conn.close()
-    
     # Создаем метод get_companies_and_vacancies_count для получения списка всех компаний и количества вакансий у каждой компании
+    @property
     def get_companies_and_vacancies_count(self):
         # Выполняем SQL-запрос к таблицам employers и vacancies, используя группировку и агрегатную функцию COUNT
         self.cur.execute("""
@@ -36,6 +44,7 @@ class DBManager:
         return result
     
     # Создаем метод get_all_vacancies для получения списка всех вакансий с указанием названия компании, названия вакансии и зарплаты и ссылки на вакансию
+    @property
     def get_all_vacancies(self):
         # Выполняем SQL-запрос к таблицам employers и vacancies, используя объединение таблиц по полю employer_id
         self.cur.execute("""
@@ -50,6 +59,7 @@ class DBManager:
         return result
     
     # Создаем метод get_avg_salary для получения средней зарплаты по вакансиям
+    @property
     def get_avg_salary(self):
         # Выполняем SQL-запрос к таблице vacancies, используя агрегатную функцию AVG и условие для выборки только тех вакансий, у которых есть данные о зарплате
         self.cur.execute("""
@@ -58,11 +68,12 @@ class DBManager:
             WHERE salary_from IS NOT NULL AND salary_to IS NOT NULL AND salary_currency = 'RUR'
         """)
         # Получаем результат запроса в виде одного числа
-        result = self.cur.fetchone()[0]
+        result = round(self.cur.fetchone()[0])
         # Возвращаем результат
         return result
     
     # Создаем метод get_vacancies_with_higher_salary для получения списка всех вакансий, у которых зарплата выше средней по всем вакансиям
+    @property
     def get_vacancies_with_higher_salary(self):
         # Выполняем SQL-запрос к таблицам employers и vacancies, используя объединение таблиц по полю employer_id и подзапрос для вычисления средней зарплаты
         self.cur.execute("""
@@ -96,3 +107,9 @@ class DBManager:
         result = self.cur.fetchall()
         # Возвращаем результат
         return result
+    
+    # Создаем метод __del__ для закрытия соединения с БД при удалении объекта класса
+    def __del__(self):
+        # Закрываем курсор и соединение с БД
+        self.cur.close()
+        self.conn.close()

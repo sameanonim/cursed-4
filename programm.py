@@ -1,6 +1,19 @@
 import psycopg2
 import json
 from main_postgres import main
+from DBManager import DBManager
+from configparser import ConfigParser # for reading the config file.
+
+config = ConfigParser()
+config.read('config.ini')
+section = 'postgresql'
+params = {
+    'host': config.get(section, 'host'),
+    'dbname': config.get(section, 'database'),
+    'user': config.get(section, 'user'),
+    'password': config.get(section, 'password'),
+    'port': config.get(section, 'port')
+}
 
 # запускает программу из main_postgres.py и затем открываем файл data_list.json и загружаем данные в переменную vacancies
 main()
@@ -8,7 +21,7 @@ with open("data_list.json", "r", encoding='utf-8') as f:
     vacancies = json.load(f)
 
 # создаём соединение с БД
-conn = psycopg2.connect(dbname='hh', user='postgres', password='26111989', host='localhost', port='5433')
+conn = psycopg2.connect(**params)
 # создаём курсор для выполнения SQL-запросов
 cur = conn.cursor()
 
@@ -78,6 +91,14 @@ for vacancy in vacancies:
     VALUES (%s, %s, %s, %s, %s, %s)
 """, (vacancy_name, vacancy_company_name, vacancy_url, vacancy_description,
       vacancy_remote_work, vacancy_salary))
+
+# Класс DBmanager для работы с БД
+db_manager= DBManager(**params)
+print(db_manager.get_companies_and_vacancies_count())
+print(db_manager.get_all_vacancies())
+print(db_manager.get_avg_salary())
+print(db_manager.get_vacancies_with_higher_salary())
+print(db_manager.get_vacancies_with_keyword("python"))
 
 # Сохраняем изменения в БД
 conn.commit()

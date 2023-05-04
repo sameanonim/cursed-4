@@ -1,31 +1,13 @@
 # Импортируем библиотеку psycopg2 для работы с БД Postgres
 import psycopg2
-from configparser import ConfigParser # for reading the config file.
-
-config = ConfigParser()
-config.read('config.ini')
-section = 'postgresql'
-params = {
-    'host': config.get(section, 'host'),
-    'dbname': config.get(section, 'database'),
-    'user': config.get(section, 'user'),
-    'password': config.get(section, 'password'),
-    'port': config.get(section, 'port')
-}
+from DBConnector import ConnectDatabase
 
 # Создаем класс DBManager с атрибутами для хранения параметров соединения с БД
-class DBManager:
+class DBManager(ConnectDatabase):
     # Создаем метод __init__ для инициализации объекта класса и установки соединения с БД
-    def __init__(self, host, dbname, user, password, port):
+    def __init__(self, filename):
         # Сохраняем параметры соединения в атрибутах объекта
-        self.host = host
-        self.dbname = dbname
-        self.user = user
-        self.password = password
-        self.port = port
-        # Устанавливаем соединение с БД и создаем курсор для выполнения SQL-запросов
-        self.conn = psycopg2.connect(**params)
-        self.cur = self.conn.cursor()
+        super().__init__(filename)
     
     # Создаем метод get_companies_and_vacancies_count для получения списка всех компаний и количества вакансий у каждой компании
     @property
@@ -68,7 +50,7 @@ class DBManager:
             WHERE salary_from IS NOT NULL AND salary_to IS NOT NULL AND salary_currency = 'RUR'
         """)
         # Получаем результат запроса в виде одного числа
-        result = round(self.cur.fetchone()[0])
+        result = self.cur.fetchone()
         # Возвращаем результат
         return result
     
@@ -111,5 +93,4 @@ class DBManager:
     # Создаем метод __del__ для закрытия соединения с БД при удалении объекта класса
     def __del__(self):
         # Закрываем курсор и соединение с БД
-        self.cur.close()
-        self.conn.close()
+        super().__init__
